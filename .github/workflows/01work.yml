@@ -3,7 +3,7 @@ name: Monorepo CI
 on:
   push:
     paths:
-      - 'frontend/**'
+      - 'front-end/**'
       - 'backend/**'
   # pull_request:
   #   paths:
@@ -26,7 +26,7 @@ jobs:
         with:
           filters: |
             frontend:
-              - 'frontend/**'
+              - 'front-end/**'
             backend:
               - 'backend/**'
 
@@ -37,11 +37,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install dependencies
-        run: cd fron-tend && npm install
+        run: cd front-end && npm install
       - name: Run tests
         run: cd front-end && npm test
       - name: Build front-end
-        run: cd frontend && npm run build
+        run: cd front-end && npm run build
 
   backend:
     needs: detect_changes
