@@ -35,7 +35,8 @@ jobs:
     if: ${{ needs.detect_changes.outputs.frontend_changed == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: checkout
+        uses: actions/checkout@v3
       - name: Install dependencies
         run: cd front-end && npm install
       - name: Run tests
@@ -48,10 +49,21 @@ jobs:
     if: ${{ needs.detect_changes.outputs.backend_changed == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
       - name: Install dependencies
-        run: cd backend && npm install
-      - name: Run tests
-        run: cd backend && npm test
-      - name: Build backend
-        run: cd backend && npm run build
+        run: |
+          cd backend
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build
+        run: |
+          cd backend
+          python setup.py build
