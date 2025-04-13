@@ -1,0 +1,57 @@
+name: Monorepo CI
+
+on:
+  push:
+    paths:
+      - 'frontend/**'
+      - 'backend/**'
+  # pull_request:
+  #   paths:
+  #     - 'frontend/**'
+  #     - 'backend/**'
+
+jobs:
+  detect_changes:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend_changed: ${{ steps.changes.outputs.frontend }}
+      backend_changed: ${{ steps.changes.outputs.backend }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Detect changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+            backend:
+              - 'backend/**'
+
+  frontend:
+    needs: detect_changes
+    if: ${{ needs.detect_changes.outputs.frontend_changed == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: cd fron-tend && npm install
+      - name: Run tests
+        run: cd front-end && npm test
+      - name: Build front-end
+        run: cd frontend && npm run build
+
+  backend:
+    needs: detect_changes
+    if: ${{ needs.detect_changes.outputs.backend_changed == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: cd backend && npm install
+      - name: Run tests
+        run: cd backend && npm test
+      - name: Build backend
+        run: cd backend && npm run build
