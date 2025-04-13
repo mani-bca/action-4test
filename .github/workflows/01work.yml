@@ -11,42 +11,45 @@ on:
   #     - 'backend/**'
 
 jobs:
-  detect_changes:
-    runs-on: ubuntu-latest
-    outputs:
-      frontend_changed: ${{ steps.changes.outputs.frontend }}
-      backend_changed: ${{ steps.changes.outputs.backend }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+  # detect_changes:
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     frontend_changed: ${{ steps.changes.outputs.frontend }}
+  #     backend_changed: ${{ steps.changes.outputs.backend }}
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
 
-      - name: Detect changes
-        id: changes
-        uses: dorny/paths-filter@v3
-        with:
-          filters: |
-            frontend:
-              - 'front-end/**'
-            backend:
-              - 'backend/**'
+  #     - name: Detect changes
+  #       id: changes
+  #       uses: dorny/paths-filter@v3
+  #       with:
+  #         filters: |
+  #           frontend:
+  #             - 'front-end/**'
+  #           backend:
+  #             - 'backend/**'
 
   frontend:
-    needs: detect_changes
-    if: ${{ needs.detect_changes.outputs.frontend_changed == 'true' }}
+    # needs: detect_changes
+    # if: ${{ needs.detect_changes.outputs.frontend_changed == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: checkout
         uses: actions/checkout@v3
+
       - name: Install dependencies
         run: cd front-end && npm install
+
       - name: Run tests
         run: cd front-end && npm test
+        
       - name: Build front-end
         run: cd front-end && npm run build
 
   backend:
-    needs: detect_changes
-    if: ${{ needs.detect_changes.outputs.backend_changed == 'true' }}
+    # needs: detect_changes
+    # if: ${{ needs.detect_changes.outputs.backend_changed == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -58,12 +61,9 @@ jobs:
           python-version: '3.x'
 
       - name: Install dependencies
-        run: |
-          cd backend
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+        run: cd backend && python -m pip install --upgrade pip && pip install -r requirements.txt
 
       - name: Build
-        run: |
-          cd backend
-          python setup.py build
+        run: cd backend && python setup.py build
+          
+          
