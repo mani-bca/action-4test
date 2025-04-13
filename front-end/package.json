@@ -1,12 +1,12 @@
+
 {
-  "name": "frontend-build-only",
+  "name": "simple-frontend-app",
   "version": "1.0.0",
   "scripts": {
-    "build": "react-scripts build"
+    "build": "parcel build index.html",
+    "test": "echo \"No tests configured\" && exit 0"
   },
-  "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1"
+  "devDependencies": {
+    "parcel": "^2.9.3"
   }
 }
